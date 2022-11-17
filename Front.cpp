@@ -47,31 +47,13 @@ void Front::draw_game(const Game& g) const
 	using std::endl;
 	
 	ClearScreen();
-	
-	if (g != Game::progressing)
-	{
-		switch (g)
-		{
-		case Game::black_win:
-			wcout << "Black Win.";
-			break;
-		case Game::white_win:
-			wcout << "White Win.";
-			break;
-		case Game::error:
-			wcout << "EORROR";
-			break;
-		}
-		return;
-	}
-
-	cout << "xy|00|11|22|33|44|55|66|77|88|\n";
-	for (size_t i = 0; i < 19; i++)
+	cout << "xy|0 |1 |2 |3 |4 |5 |6 |7 |8 |\n";
+	for (int i = 0; i < 19; i++)
 	{
 		if (i % 2 == 1)
 		{
 			cout << i/2 << " ";
-			for (size_t j = 0; j < 9; j++)
+			for (int j = 0; j < 9; j++)
 			{
 				switch (g[(i-1)/2][j])
 				{
@@ -92,5 +74,22 @@ void Front::draw_game(const Game& g) const
 		{
 			wcout << "------------------------------" << endl;
 		}
+	}
+
+	if (g != Game::progressing)
+	{
+		switch (g)
+		{
+		case Game::black_win:
+			wcout << "Black Win.";
+			break;
+		case Game::white_win:
+			wcout << "White Win.";
+			break;
+		case Game::error:
+			wcout << "EORROR";
+			break;
+		}
+		return;
 	}
 }
