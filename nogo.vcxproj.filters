@@ -16,6 +16,12 @@
     <Filter Include="设计">
       <UniqueIdentifier>{68b78c30-ca87-4eb4-abec-1621917b535a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\Robots">
+      <UniqueIdentifier>{b689db7b-4fde-496e-adf7-58b94a993169}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="设计\机器算法设计">
+      <UniqueIdentifier>{6917e131-16bf-45ca-a7a2-93666bea7a3c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="设计\主体框架.pdf">
@@ -49,8 +55,8 @@
     <ClCompile Include="Console.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Robots.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="RandomBots.cpp">
+      <Filter>源文件\Robots</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

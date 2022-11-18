@@ -29,7 +29,7 @@ public:
 	Console();
 	~Console() {}
 
-	void StartNew();
+	Game::flag StartNew();
 
 	Game::flag place(const Game::pos&);
 

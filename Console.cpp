@@ -15,7 +15,7 @@ Console::Console()
 	botPerformDelay = 0;
 }
 
-void Console::StartNew()
+Game::flag Console::StartNew()
 {
 	onGoing.resize(1, Game());
 	perform.draw_game(now());
@@ -23,8 +23,9 @@ void Console::StartNew()
 	if (BlackBot != nullptr)
 	{
 		sleep(botPerformDelay);
-		place(BlackBot(now(), botTimeLimit));
+		return place(BlackBot(now(), botTimeLimit));
 	}
+	return now().show_state();
 }
 
 Game::flag Console::place(const Game::pos& where)
