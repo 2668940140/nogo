@@ -74,7 +74,8 @@ public:
 
     ~Game(){}
 
-    explicit Game(json& content);
+    //ignore existing error
+    explicit Game(const json& content);
 
     flag show_state() const { return state; }
     
@@ -85,6 +86,8 @@ public:
     const array<array<bool, 9>, 9>& show_available() const { return availableQ; }
 
     //return the object in json
+    //only save the board, next_part, other thing waiting to update
+    //if an error has been set, then return an empty object
     json json_content() const;
 
     //if out of range , cracked. Yes
@@ -95,7 +98,10 @@ public:
     //IF false, nothing has benn changed, an error flag has been set.
     Game& place(const pos& where);
 
-    bool read_json_save(json& content);
+    void read_json_save(const json& content)
+    {
+        *this = Game(content);
+    }
     
     // clear the error flag if any, and reset state to what it should be
     void clear();

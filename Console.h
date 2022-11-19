@@ -17,6 +17,8 @@ private:
 	inline Game& now() { return onGoing.back(); }
 	
 public:
+	bool performQ = true;
+
 	//recommended time, unit:ms
 	size_t botTimeLimit;
 

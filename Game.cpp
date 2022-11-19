@@ -149,7 +149,41 @@ Game::Game()
     update();
 }
 
-const std::array<Game::part, 9>& Game::operator[](int row) const   
+Game::Game(const json& content)
+{
+    state = progressing;
+    char row[2]{};
+
+    next_part = content["next_part"];
+    for (int i = 0; i < 9; i++)
+    {
+        for (int j = 0; j < 9; j++)
+        {
+            row[0] = i + '0';
+            board[i][j] = content[row][j];
+        }
+    }
+    update();
+}
+
+
+json Game::json_content() const
+{
+    if (state == error) return json();
+    
+    json output;
+    output["next_part"] = next_part;
+    char row[2]{ 0 };
+    for (int i = 0; i < 9; i++)
+    {
+        row[0] = i + '0';
+        output[row] = json(board[i]);
+    }
+ 
+    return output;
+}
+
+const std::array<Game::part, 9>& Game::operator[](int row) const
 {
     return board[row];
 }

@@ -18,7 +18,7 @@ Console::Console()
 Game::flag Console::StartNew()
 {
 	onGoing.resize(1, Game());
-	perform.draw_game(now());
+	if (performQ) perform.draw_game(now());
 
 	if (BlackBot != nullptr)
 	{
@@ -32,7 +32,7 @@ Game::flag Console::place(const Game::pos& where)
 {
 	onGoing.emplace_back(now());
 	onGoing.back().place(where);
-	perform.draw_game(now());
+	if (performQ)perform.draw_game(now());
 	if (now().show_state() == Game::progressing)
 	{
 		switch (now().show_next_part())
