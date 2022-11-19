@@ -75,7 +75,7 @@ public:
     ~Game(){}
 
     //ignore existing error
-    explicit Game(const json& content);
+    Game(const json& content);
 
     flag show_state() const { return state; }
     

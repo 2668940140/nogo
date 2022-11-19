@@ -42,7 +42,7 @@ const Game::pos Robot::RandomBot1(const Game& g, size_t timeLimit)
 		}
 	}
 
-	int size = whereAvailable.size();
+	size_t size = whereAvailable.size();
 	std::vector<int> cnts(size);
 	int MinPlaces = INT32_MAX;
 	for (size_t l = 0; l < size; l++)
