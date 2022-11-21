@@ -117,7 +117,6 @@ void Game::update()
             }
         }
     }
-    if (cnt == 81) availableQ[4][4] = false;
 
     if (cnt == 0) //which means next_part has nowhere to place his/her piece. i.e. the other part has won 
     {
