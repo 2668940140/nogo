@@ -4,18 +4,9 @@
 
 using namespace std;
 int main() {
-	/*
-	console.WhiteBot = console.BlackBot = Robot::RandomBot;
-	console.performQ = false;
+	console.botTimeLimit = 100;
+	console.setBlackBot(Robot::C_mctsBot);
+	console.setWhiteBot(Robot::RandomBot1);
 	console.StartNew();
-	console.save("save");
-	*/
-
-	console.read("save");
-	int step;
-	while (cin >> step)
-	{
-		console.takeBack(step);
-	}
 	return 0;
 }

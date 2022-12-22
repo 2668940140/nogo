@@ -7,18 +7,26 @@
 
 using json = nlohmann::json;
 
-//Recieve a function as a robot
-//first parameter is the situation of the game
-//second parameter is the time limit of the calculation
-//of course ,not implemented, the bot can ignore it,but better not
-typedef const Game::pos (*Bot)(const Game&, size_t timeLimit) ;
-
 static class Console
 {
 private:
-	std::vector<Game> onGoing;
+	struct stepInfo
+	{
+		Game g;
+		json blackInfo;
+		json whiteInfo;
+		stepInfo(const Game &m_g = Game(), const json& m_blackInfo = json(), const json& m_whiteInfo = json())
+		{
+			g = m_g;
+			blackInfo = m_blackInfo;
+			whiteInfo = m_whiteInfo;
+		}
+	};
+
+private:
+	std::vector<stepInfo> onGoing;
 	Front perform;
-	inline Game& now() { return onGoing.back(); }
+	inline Game& now() { return onGoing.back().g; }
 
 private:
 	//save the series of the games
@@ -29,6 +37,12 @@ private:
 
 	//mainly used after any break
 	Game::flag keepGo();
+
+	json whiteBotInfo;
+	json blackBotInfo;
+
+	Bot BlackBot;
+	Bot WhiteBot;
 	
 public:
 	//determine whether it will print or not
@@ -40,13 +54,11 @@ public:
 	//mainly used for robot vs robot, initializeed as 0, unit:ms
 	size_t botPerformDelay;
 
-	Bot BlackBot;
-	Bot WhiteBot;
-
 	Console();
 	~Console() {}
 
-	Game::flag StartNew();
+	//receive initial info
+	Game::flag StartNew(const json& b = json(), const json& w = json());
 
 	Game::flag place(const Game::pos&);
 
@@ -66,4 +78,7 @@ public:
 	//to be updated for path and other config
 	void read(const std::string& name);
 
+	//the second parameter is the initial info
+	void setBlackBot(Bot,json info = json());
+	void setWhiteBot(Bot,json info = json());
 }console;

@@ -247,6 +247,16 @@ void Game::clear()
 }
 
 
+bool operator<(const Game::pos& a, const Game::pos& b)
+{
+    if (a.x < b.x) return true;
+    else if (a.x > b.x) return false;
+    else //if a.x == b.x
+    {
+        return a.y < b.y;
+    }
+}
+
 Game::part operator!(const Game::part& p)
 {
     if (p == Game::white)

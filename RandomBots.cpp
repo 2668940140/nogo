@@ -1,11 +1,11 @@
-#include "Robots.h"
+#include "RandomBots.h"
 #include <vector>
 #include <algorithm>
 #include <ctime>
 #include <cstdlib>
 
 //This is used as a test. random, gaurantee not suicide
-const Game::pos Robot::RandomBot(const Game& g, size_t timeLimit)
+const Game::pos Robot::RandomBot(const Game& g, size_t timeLimit, json& info)
 {
 	std::vector<Game::pos> whereAvailable;
 	for (int i = 0; i < 9; i++)
@@ -20,14 +20,14 @@ const Game::pos Robot::RandomBot(const Game& g, size_t timeLimit)
 	}
 
 	size_t size = whereAvailable.size();
-	srand(time(NULL));
+	srand(clock());
 	size_t select = rand() % size;
 
 	return whereAvailable[select];
 }
 
 //try to make its rival has less place to place, depth = 1
-const Game::pos Robot::RandomBot1(const Game& g, size_t timeLimit)
+const Game::pos Robot::RandomBot1(const Game& g, size_t timeLimit, json& info)
 {
 	std::vector<Game::pos> whereAvailable;
 	for (int i = 0; i < 9; i++)
@@ -70,7 +70,7 @@ const Game::pos Robot::RandomBot1(const Game& g, size_t timeLimit)
 	{
 		if (cnts[i] == MinPlaces) choices.push_back(i);
 	}
-	srand(time(NULL));
+	srand(clock());
 	int select = rand() % choices.size();
 
 	return whereAvailable[choices[select]];

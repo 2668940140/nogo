@@ -11,6 +11,10 @@
 
 using std::array;
 using json = nlohmann::json;
+//Recieve a function as a robot
+//first parameter is the situation of the game
+//second parameter is the time limit of the calculation
+//of course ,not implemented, the bot can ignore it,but better not
 
 class Game
 {
@@ -36,6 +40,14 @@ public:
        int y;
        pos(int i = 0, int j = 0) { x = i; y = j; }
    };
+
+   //for map , set and others, lexicographic order, x to y
+   friend bool operator<(const pos& a, const pos& b);
+
+   friend bool operator>(const pos& a, const pos& b)
+   {
+       return b < a;
+   }
 
 private:
 	 //the borad stores the thing on every point.
@@ -107,6 +119,7 @@ public:
     void clear();
     
     void restart() { *this = Game(); }
-
-    
 };
+
+//2nd para: unit ms
+typedef const Game::pos(*Bot)(const Game&, size_t timeLimit, json& info);

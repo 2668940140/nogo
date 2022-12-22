@@ -27,6 +27,8 @@
     <None Include="设计\主体框架.pdf">
       <Filter>设计</Filter>
     </None>
+    <None Include="README.md" />
+    <None Include="文档\NOGO description .pdf" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -39,6 +41,15 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Robots.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="B_mcts.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="RandomBots.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="C_mcts.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -56,6 +67,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="RandomBots.cpp">
+      <Filter>源文件\Robots</Filter>
+    </ClCompile>
+    <ClCompile Include="B_mcts.cpp">
+      <Filter>源文件\Robots</Filter>
+    </ClCompile>
+    <ClCompile Include="C_mcts.cpp">
       <Filter>源文件\Robots</Filter>
     </ClCompile>
   </ItemGroup>
