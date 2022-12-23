@@ -10,4 +10,12 @@ namespace Robot
 	}
 }
 #include "C_mcts.h"
+namespace Robot
+{
+	const Game::pos c_mctsBot(const Game& g, size_t timeLimit, json& info)
+	{
+		C_mcts c_mcts;
+		return c_mcts.solve(g, timeLimit, info);
+	}
+}
 

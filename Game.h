@@ -64,6 +64,7 @@ private:
 
     array<array<bool, 9>, 9> availableQ;
 
+    //the part to place a piece
     part next_part;
 
     flag state;

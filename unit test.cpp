@@ -5,7 +5,7 @@
 using namespace std;
 int main() {
 	console.botTimeLimit = 100;
-	console.setBlackBot(Robot::C_mctsBot);
+	console.setBlackBot(Robot::c_mctsBot);
 	console.setWhiteBot(Robot::RandomBot1);
 	console.StartNew();
 	return 0;
