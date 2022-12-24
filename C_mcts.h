@@ -24,9 +24,12 @@ namespace Robot
 			int unexploredSonsCnt;
 			int totalSonsCnt;
 			int sonsIndex[81];
+			int next_part_ava_cnt;
+			int counter_part_ava_cnt;
 			node()
 			{
 				w = t = 0;
+				next_part_ava_cnt = counter_part_ava_cnt = 0;
 				unexploredSonsCnt = totalSonsCnt = 0;
 				memset(sons, 0, sizeof(sons));
 				memset(sonsIndex, 0, sizeof(sonsIndex));
@@ -42,6 +45,7 @@ namespace Robot
 	private:
 		//overall
 		const double exploreFactor = 1.414;
+		const double greedyFactor = 1.0;
 		const int dr[4] = { -1,0,1,0 };
 		const int dc[4] = { 0,-1,0,1 };
 		const json C_mcts_initial_Json = {};
@@ -82,7 +86,10 @@ namespace Robot
 		inline void eraseAva(int partSubscript, int r, int c);
 		void expand3(int, int r, int c); //expand a region for one step in rollout
 	public:
-		const Game::pos	solve(const Game& g, size_t timeLimit, json& info);
+		C_mcts(double m_expore = 1.414, double m_greedy = 1.0) : exploreFactor(m_expore), greedyFactor(m_greedy)
+		{}
+		const Game::pos	solve(const Game& g, size_t timeLimit, json& info); //without greedy
+		const Game::pos	solve1(const Game& g, size_t timeLimit, json& info); //with linear down greedy
 	};
 	
 
