@@ -24,10 +24,7 @@ Data reuse:
 */
 void Robot::C_mcts::dfs1(int r, int c) 
 {
-    if (r < 0 || r >= 9 || c < 0 || c >= 9 || vis[r][c])
-        return;
-    else
-        vis[r][c] = true;
+    vis[r][c] = true;
 
     if (board[r][c] == counterColor)
         return;
@@ -40,65 +37,74 @@ void Robot::C_mcts::dfs1(int r, int c)
     else //same color
     {
         avaState[r][c] = 2;
+        int x_, y_;
         for (int i = 0; i < 4; i++)
         {
-            dfs1(r + dr[i], c + dc[i]);
+            x_ = r + dr[i]; y_ = c + dc[i];
+            if (x_ < 0 || x_ >= 9 || y_ < 0 || y_ >= 9 || vis[x_][y_])
+                continue;
+            dfs1(x_, y_);
         }
     }
 }
 
 void Robot::C_mcts::dfs2(int r, int c)
 {
-    if (r < 0 || r >= 9 || c < 0 || c >= 9 || avaState[r][c])
-        return;
+    vis[r][c] = 1;
     if (!board[r][c])
     {
-        avaState[r][c] = 1;
-        for (int i = 0; i < 4; i++)
+        if (!avaState[r][c])
+            avaState[r][c] = 1;
+        int x_, y_;
+        for (int k = 0; k < 4; k++)
         {
-            dfs2(r + dr[i], c + dc[i]);
+            x_ = r + dr[k]; y_ = c + dc[k];
+            if (x_ < 0 || x_ >= 9 || y_ < 0 || y_ >= 9 || vis[x_][y_])continue;
+            dfs2(x_, y_);
         }
     }
-}
 
-void Robot::C_mcts::dfs3(int r, int c)
-{
-    if (r < 0 || r >= 9 || c < 0 || c >= 9 || vis[r][c])
-        return;
-    else
-        vis[r][c] = true;
-
-    if (board[r][c] == counterColor)
-        return;
-    else if (!board[r][c]) //air
-    {
-        airCnt++;
-        junctionAir[0] = r;
-        junctionAir[1] = c;
-    }
-    else //same color
-    {
-        dpAvaState[0][r][c] = dpAvaState[1][r][c] = 2;
-        for (int i = 0; i < 4; i++)
-        {
-            dfs3(r + dr[i], c + dc[i]);
-        }
-    }
 }
 
 void Robot::C_mcts::dfs4(int r, int c)
 {
-    if (r < 0 || r >= 9 || c < 0 || c >= 9 || (dpAvaState[0][r][c] && dpAvaState[1][r][c]))
-        return;
+    vis[r][c] = 1;
     if (!board[r][c])
     {
-        if (!dpAvaState[0][r][c])dpAvaState[0][r][c] = 1;
-        if (!dpAvaState[1][r][c])dpAvaState[1][r][c] = 1;
-        for (int i = 0; i < 4; i++)
+        if (!dpAvaState[0][r][c])
+            dpAvaState[0][r][c] = 1;
+        if (!dpAvaState[1][r][c])
+            dpAvaState[1][r][c] = 1;
+        int x_, y_;
+        for (int k = 0; k < 4; k++)
         {
-            dfs4(r + dr[i], c + dc[i]);
+            x_ = r + dr[k]; y_ = c + dc[k];
+            if (x_ < 0 || x_ >= 9 || y_ < 0 || y_ >= 9 || vis[x_][y_])continue;
+            dfs4(x_, y_);
         }
     }
+}
+
+void Robot::C_mcts::dfs5(int r, int c, bool& ok)
+{
+    if (ok) return;
+    vis[r][c] = 1;
+    if (!board[r][c])
+    {
+        ok = true;
+        return;
+    }
+    else if (board[r][c] == color)
+    {
+        int x_, y_;
+        for (int k = 0; k < 4; k++)
+        {
+            x_ = r + dr[k]; y_ = c + dc[k];
+            if (x_ < 0 || x_ >= 9 || y_ < 0 || y_ >= 9 || vis[x_][y_])continue;
+            dfs5(x_, y_, ok);
+        }
+    }
+
 }
 
 void Robot::C_mcts::expand1(int part, node* root) //from a board to update the unexplored sons
@@ -112,12 +118,26 @@ void Robot::C_mcts::expand1(int part, node* root) //from a board to update the u
             if (avaState[i][j]) continue; //updated
             if (board[i][j]) //not air
             {
+                avaState[i][j] = 2;
                 memset(vis, 0, sizeof(vis));
                 color = board[i][j];
                 counterColor = board[i][j] % 2 + 1; //1->2 2->1
                 airCnt = 0;
                 dfs1(i, j);
-                if (airCnt == 1) avaState[junctionAir[0]][junctionAir[1]] = 2;
+                if (airCnt == 1)
+                {
+                    if (color == enemy)
+                        avaState[junctionAir[0]][junctionAir[1]] = 2;
+                    else
+                    {
+                        board[junctionAir[0]][junctionAir[1]] = part;
+                        bool ok = false;
+                        dfs5(junctionAir[0], junctionAir[1], ok);
+                        if (!ok)
+                            avaState[junctionAir[0]][junctionAir[1]] = 2;
+                        board[junctionAir[0]][junctionAir[1]] = 0;
+                    }
+                }
             }
             else
             {
@@ -147,6 +167,7 @@ void Robot::C_mcts::expand1(int part, node* root) //from a board to update the u
                 }
                 else
                 {
+                    memset(vis, 0, sizeof(vis));
                     dfs2(i, j);
                 }
             }
@@ -158,7 +179,7 @@ void Robot::C_mcts::expand1(int part, node* root) //from a board to update the u
         {
             if (avaState[i][j] == 1)
             {
-                root->sonsIndex[root->unexploredSonsCnt] = 9 * i + j;
+                root->sonsIndex[root->totalSonsCnt] = 9 * i + j;
                 root->totalSonsCnt++;
             }
         }
@@ -166,7 +187,7 @@ void Robot::C_mcts::expand1(int part, node* root) //from a board to update the u
     root->unexploredSonsCnt = root->totalSonsCnt;
 }
 
-void Robot::C_mcts::expand2(int part, node*)
+void Robot::C_mcts::expand2(int part, node* root)
 {
     memset(dpAvaState, 0, sizeof(dpAvaState));
     
@@ -175,17 +196,38 @@ void Robot::C_mcts::expand2(int part, node*)
     {
         for (int j = 0; j < 9; j++)
         {
-            if (dpAvaState[0][i][j]) continue; //updated
+            if (dpAvaState[0][i][j]&&dpAvaState[1][i][j]) continue; //updated
             if (board[i][j]) //not air
             {
+                dpAvaState[0][i][j] = dpAvaState[1][i][j] = 2;
                 memset(vis, 0, sizeof(vis));
                 color = board[i][j];
                 counterColor = board[i][j] % 2 + 1; //1->2 2->1
                 airCnt = 0;
-                dfs3(i, j);
-                if (airCnt == 1) dpAvaState[0][junctionAir[0]][junctionAir[1]]
-                    = dpAvaState[1][junctionAir[0]][junctionAir[1]]
-                    = 2;
+                dfs1(i, j);
+                if (airCnt == 1)
+                {
+                    if (color == enemy)
+                    {
+                        dpAvaState[part - 1][junctionAir[0]][junctionAir[1]] = 2;
+                        board[junctionAir[0]][junctionAir[1]] = enemy;
+                        bool ok = false;
+                        dfs5(junctionAir[0], junctionAir[1], ok);
+                        if (!ok)
+                            dpAvaState[enemy-1][junctionAir[0]][junctionAir[1]] = 2;
+                        board[junctionAir[0]][junctionAir[1]] = 0;
+                    }
+                    else
+                    {
+                        dpAvaState[enemy - 1][junctionAir[0]][junctionAir[1]] = 2;
+                        board[junctionAir[0]][junctionAir[1]] = part;
+                        bool ok = false;
+                        dfs5(junctionAir[0], junctionAir[1], ok);
+                        if (!ok)
+                            dpAvaState[part-1][junctionAir[0]][junctionAir[1]] = 2;
+                        board[junctionAir[0]][junctionAir[1]] = 0;
+                    }
+                }
             }
             else
             {
@@ -194,7 +236,7 @@ void Robot::C_mcts::expand2(int part, node*)
                 int x_, y_;
                 for (int k = 0; k < 4; k++)
                 {
-                    x_ = i + dr[k]; y_ = j + dr[k];
+                    x_ = i + dr[k]; y_ = j + dc[k];
                     if (x_ < 0 || x_ >= 9 || y_ < 0 || y_ >= 9)
                     {
                         partCnt++; enemyCnt++;
@@ -210,15 +252,13 @@ void Robot::C_mcts::expand2(int part, node*)
                 if (partCnt == 4)
                 {
                     dpAvaState[enemy - 1][i][j] = 2;
-                    dpAvaState[part - 1][i][j] = 1;
                 }
                 else if (enemyCnt == 4)
                 {
                     dpAvaState[part - 1][i][j] = 2;
-                    dpAvaState[enemy - 1][i][j] = 1;
                 }
-                else
-                    dfs4(i, j);
+                memset(vis, 0, sizeof(vis));
+                dfs4(i, j);
             }
         }
     }
@@ -228,7 +268,7 @@ void Robot::C_mcts::expand2(int part, node*)
         {
             if (dpAvaState[part-1][i][j] == 1)
             {
-                root->sonsIndex[root->unexploredSonsCnt] = 9 * i + j;
+                root->sonsIndex[root->totalSonsCnt] = 9 * i + j;
                 root->totalSonsCnt++;
             }
         }
@@ -236,8 +276,100 @@ void Robot::C_mcts::expand2(int part, node*)
     root->unexploredSonsCnt = root->totalSonsCnt;
 }
 
-void Robot::C_mcts::expand3(int part, int r, int c)
+inline void Robot::C_mcts::eraseAva(int partSubscript, int r, int c)
 {
+    if (dpAvaState[partSubscript][r][c] == 2)return;
+    dpAvaState[partSubscript][r][c] = 2;
+    avaPlaceCnt[partSubscript]--;
+    int choice = 9 * r + c;
+    for (int i = 0; i < avaPlaceCnt[partSubscript]; i++)
+    {
+        if (dpAvaPlace[partSubscript][i] == choice)
+        {
+            std::swap(dpAvaPlace[partSubscript][i], dpAvaPlace[partSubscript][avaPlaceCnt[partSubscript]]);
+            return;
+        }
+    }
+}
+
+void Robot::C_mcts::expand3(int partSubscript, int r, int c)
+{
+    board[r][c] = partSubscript + 1;
+    int enemyScript = partSubscript^1;
+    //more unavailable only:
+    //1. new block with 1 air
+    //2. junction air become has no adjacent air
+    eraseAva(partSubscript, r, c);
+    eraseAva(enemyScript, r, c);
+    memset(vis, 0, sizeof(vis));
+    color = board[r][c];
+    counterColor = color % 2 + 1;
+    airCnt = 0;
+    dfs1(r, c);
+    if (airCnt == 1)
+    {
+        eraseAva(enemyScript, junctionAir[0], junctionAir[1]);
+        board[junctionAir[0]][junctionAir[1]] = color;
+        bool ok = false;
+        dfs5(junctionAir[0], junctionAir[1], ok);
+        if (!ok)
+            eraseAva(partSubscript, junctionAir[0], junctionAir[1]);
+        board[junctionAir[0]][junctionAir[1]] = 0;
+    }
+    int x_, y_;
+    for (int k = 0; k < 4; k++)
+    {
+        x_ = r + dr[k]; y_ = c + dc[k];
+        if (x_ < 0 || x_ >= 9 || y_ < 0 || y_ >= 9) continue;
+        if (!board[x_][y_])
+        {
+            int partCnt = 0;
+            int enemyCnt = 0;
+            int x__, y__;
+            for (int l = 0; l < 4; l++)
+            {
+                x__ = x_ + dr[l]; y__ = y_ + dc[l];
+                if (x__ < 0 || x__ >= 9 || y__ < 0 || y__ >= 9)
+                {
+                    partCnt++; enemyCnt++;
+                    continue;
+                }
+                else if (!board[x__][y__])
+                    break;
+                else if (board[x__][y__] == partSubscript+1)
+                    partCnt++;
+                else
+                    enemyCnt++;
+            }
+            if (partCnt == 4)
+            {
+                eraseAva(enemyScript, x_, y_);
+            }
+            else if (enemyCnt == 4)
+            {
+                eraseAva(partSubscript, x_, y_);
+            }
+        }
+        else
+        {
+            memset(vis, 0, sizeof(vis));
+            color = board[x_][y_];
+            counterColor = color % 2 + 1;
+            airCnt = 0;
+            dfs1(x_, y_);
+            if (airCnt == 1)
+            {
+                eraseAva(counterColor-1, junctionAir[0], junctionAir[1]);
+                board[junctionAir[0]][junctionAir[1]] = color;
+                bool ok = false;
+                dfs5(junctionAir[0], junctionAir[1], ok);
+                if (!ok)
+                    eraseAva(color-1, junctionAir[0], junctionAir[1]);
+                board[junctionAir[0]][junctionAir[1]] = 0;
+            }
+        }
+    }
+
 }
 
 const Game::pos Robot::C_mcts::solve(const Game& g, size_t timeLimit, json& info)
@@ -250,12 +382,13 @@ const Game::pos Robot::C_mcts::solve(const Game& g, size_t timeLimit, json& info
             board[i][j] = g[i][j]; //0air 1black 2white
         }
     }
-    root = new node;
-    expand1(g.show_next_part(),root);
+    node* root = new node;
+    int root_next_Part = g.show_next_part();
+    expand1(root_next_Part,root);
     //iteration
     
     int path[80]{};
-    int pathLen = 0; //for backpropagation
+
     do
     {
         node* now = root;
@@ -266,11 +399,13 @@ const Game::pos Robot::C_mcts::solve(const Game& g, size_t timeLimit, json& info
                 board[i][j] = g[i][j]; //0air 1black 2white
             }
         }
-        int next_part = g.show_next_part();
+        int next_part = root_next_Part;
         int counter_part = next_part % 2 + 1;
 
         //go to leaf:
-        while (now->unexploredSonsCnt!=0)
+        int pathLen = 0;
+
+        while (now->unexploredSonsCnt==0 && now->totalSonsCnt>0)
         {
             double maxUCT = 0;
             int index = 0;
@@ -286,10 +421,11 @@ const Game::pos Robot::C_mcts::solve(const Game& g, size_t timeLimit, json& info
             }
             board[now->sonsIndex[index] / 9][now->sonsIndex[index] % 9] = next_part;
             std::swap(next_part, counter_part);
+            now = now->sons[now->sonsIndex[index]];
             path[pathLen] = index;
             pathLen++;
         }
-
+        if (now->totalSonsCnt == 0) continue;
         //expand:
         now->unexploredSonsCnt--;
         board[now->sonsIndex[now->unexploredSonsCnt] / 9][now->sonsIndex[now->unexploredSonsCnt] % 9] = next_part;
@@ -301,6 +437,7 @@ const Game::pos Robot::C_mcts::solve(const Game& g, size_t timeLimit, json& info
 
         //roll out
         //attention: avaPlaceCnt only decreases
+        avaPlaceCnt[0] = avaPlaceCnt[1] = 0;
         for (int part = 0; part < 2; part++)
         {
             for (int i = 0; i < 9; i++)
@@ -317,16 +454,42 @@ const Game::pos Robot::C_mcts::solve(const Game& g, size_t timeLimit, json& info
         }
 
         //attention, dpAvaPlace is ordered,but soon unodered -_- ...
-        while (avaPlaceCnt[next_part-1])
+        while (avaPlaceCnt[next_part-1]>0)
         {
             srand(clock());
             int choice = rand() % avaPlaceCnt[next_part - 1];
-            expand3(next_part, dpAvaPlace[next_part - 1][choice] / 9, dpAvaPlace[next_part - 1][choice] % 9);
+            expand3(next_part-1, dpAvaPlace[next_part - 1][choice] / 9, dpAvaPlace[next_part - 1][choice] % 9);
 ;           std::swap(next_part, counter_part);
+        }
+
+        //Backpropagation:C ----> Root
+        //loser is next_part
+        now = root;
+        int winAddition = 0;
+        if (root_next_Part == next_part) winAddition = 1;
+        now->w += winAddition;
+        now->t ++;
+        for (int i = 0; i < pathLen; i++)
+        {
+            now = now->sons[now->sonsIndex[path[i]]];
+            winAddition ^= 1;
+            now->w += winAddition;
+            now->t++;
         }
 
     } while ((clock()-startTime)<=timeLimit);
 
+    int index = 0;
+    int max_t = 0;
+    for (int i = root->unexploredSonsCnt; i < root->totalSonsCnt; i++)
+    {
+        if (root->sons[root->sonsIndex[i]]->t > max_t)
+        {
+            max_t = root->sons[root->sonsIndex[i]]->t;
+            index = root->sonsIndex[i];
+        }
+    }
+
     delete root;
-    return Game::pos();
+    return { index / 9,index % 9 };
 }
