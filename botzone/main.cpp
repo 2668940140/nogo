@@ -23,94 +23,93 @@ namespace Robot
 	*/
 	class C_mcts
 	{
-	public:
-		/*
-		leaf <=> unexporedSonsCnt > 0 || win / lose(for next part)
-		lose <=> sonsCnt == unexploredSonsCnt == 0;
-		*/
-		struct node
-		{
-			int w; // win games, not for next_part, but for the part which just placed a piece
-			int t; // total games
-			node* sons[81];
-			int unexploredSonsCnt;
-			int totalSonsCnt;
-			int sonsIndex[81];
-			int next_part_ava_cnt;
-			int counter_part_ava_cnt;
-			node()
-			{
-				w = t = 0;
-				next_part_ava_cnt = counter_part_ava_cnt = 0;
-				unexploredSonsCnt = totalSonsCnt = 0;
-				memset(sons, 0, sizeof(sons));
-				memset(sonsIndex, 0, sizeof(sonsIndex));
-			}
-			~node()
-			{
-				for (int i = unexploredSonsCnt; i < totalSonsCnt; i++)
-				{
-					delete sons[sonsIndex[i]];
-				}
-			}
-		};
-	private:
-		//overall
-		const double exploreFactor = 1.414;
-		const double greedyFactor = 1.414;
-		const int dr[4] = { -1,0,1,0 };
-		const int dc[4] = { 0,-1,0,1 };
-		const json C_mcts_initial_Json = {};
-
-
-		int board[9][9] = { 0 };
-
-		//expand and playout:
-		bool vis[9][9] = { 0 };
-		int airCnt = 0;
-		int color;
-		int counterColor;
-		int junctionAir[2] = { 0 };
-		int avaState[9][9] = { 0 }; //0 not update,1 ok, 2 not ok
-
-		//roll out:
-		//0 not update,1 ok, 2 not ok
-		int dpAvaState[2][9][9] = { 0 };
-		int dpAvaPlace[2][80] = { 0 };
-		int avaPlaceCnt[2] = { 0 };
-    
     public:
-        //for botZone
+
+        /*
+        leaf <=> unexporedSonsCnt > 0 || win / lose(for next part)
+        lose <=> sonsCnt == unexploredSonsCnt == 0;
+        */
+        struct node
+        {
+            long long w; // about value
+            long long t; // total games
+            node* sons[81];
+            int unexploredSonsCnt;
+            int totalSonsCnt;
+            int sonsIndex[81];
+            int next_part_ava_cnt;
+            int counter_part_ava_cnt;
+            node()
+            {
+                w = t = 0;
+                next_part_ava_cnt = counter_part_ava_cnt = 0;
+                unexploredSonsCnt = totalSonsCnt = 0;
+                memset(sons, 0, sizeof(sons));
+                memset(sonsIndex, 0, sizeof(sonsIndex));
+            }
+            ~node()
+            {
+                for (int i = unexploredSonsCnt; i < totalSonsCnt; i++)
+                {
+                    delete sons[sonsIndex[i]];
+                }
+            }
+        };
         node* root = new node;
-	private:
-		//dfs with color
-		void dfs1(int r, int c);
+    private:
+        //overall
+        const double exploreFactor = 1.414;
+        const double greedyFactor = 1.414;
+        const json C_mcts_initial_Json = {};
+        const int dr[4] = { -1,0,1,0 };
+        const int dc[4] = { 0,-1,0,1 };
 
-		//dfs air
-		void dfs2(int r, int c);
+        int board[9][9] = { 0 };
 
-		//dfs with color in roll out
-		//void dfs3(int r, int c); // same as dfs1
+        //expand and playout:
+        bool vis[9][9] = { 0 };
+        int airCnt = 0;
+        int color;
+        int counterColor;
+        int junctionAir[2] = { 0 };
+        int avaState[9][9] = { 0 }; //0 not update,1 ok, 2 not ok
 
-		//dfs air in roll out
-		void dfs4(int r, int c);
+        //roll out:
+        //0 not update,1 ok, 2 not ok
+        int dpAvaState[2][9][9] = { 0 };
+        int dpAvaPlace[2][80] = { 0 };
+        int avaPlaceCnt[2] = { 0 };
 
-		//dfs if the part can place in this air, which is the only air of one block
-		void dfs5(int r, int c);
+        bool ok = false;
+    private:
+        //dfs with color
+        void dfs1(int r, int c);
 
-		void expand1(int part, node*); //normal expand
-		void expand2(int part, node*); //expand for the first step in rollout
-		inline void eraseAva(int partSubscript, int r, int c);
-		void expand3(int, int r, int c); //expand a region for one step in rollout
+        //dfs air
+        void dfs2(int r, int c);
+
+        //dfs with color in roll out
+        //void dfs3(int r, int c); // same as dfs1
+
+        //dfs air in roll out
+        void dfs4(int r, int c);
+
+        //dfs if the part can place in this air, which is the only air of one block
+        void dfs5(int r, int c, bool& ok);
+
+        void expand1(int part, node*); //normal expand
+        void expand2(int part, node*); //expand for the first step in rollout
+        inline void eraseAva(int partSubscript, int r, int c);
+        void expand3(int, int r, int c); //expand a region for one step in rollout
 	public:
 		C_mcts(double m_expore = 1.414, double m_greedy = 1.0) : exploreFactor(m_expore), greedyFactor(m_greedy)
 		{}
-	    void solve1(size_t timeLimit, json& info); //with linear down greedy
+	    void solve(size_t timeLimit, json& info); //with linear down greedy
 	};
 
 
 }
-
+Robot::C_mcts c_mcts(1.414,1.0);
 int main()
 {
 	std::string str;
@@ -130,9 +129,8 @@ int main()
         root_next_Part = 1;
     }
 
-    Robot::C_mcts c_mcts;
     int clock_per_second = (CLOCKS_PER_SEC * 0.95);
-    c_mcts.solve1(clock_per_second*2,input);
+    c_mcts.solve(clock_per_second*2,input);
 
 	output["response"]["x"] = choice[0];
 	output["response"]["y"] = choice[1];
@@ -152,7 +150,7 @@ int main()
             c_mcts.root = c_mcts.root->sons[index];
         else
             c_mcts.root = new Robot::C_mcts::node;
-        c_mcts.solve1(clock_per_second, input);
+        c_mcts.solve(clock_per_second, input);
         std::cout << "{\"response\":{\"x\":" << choice[0] << ", \"y\":" << choice[1] << " } }";
 		std::cout << "\n>>>BOTZONE_REQUEST_KEEP_RUNNING<<<\n";
 		std::cout << std::flush;
@@ -160,22 +158,6 @@ int main()
 	return 0;
 }
 
-
-
-/*
-Choose:UCT Root ---> Leaf(has unexplored son)
-Expand:Choose an unexplored son, called C
-Stimulate:Rollout
-Backpropagation:C ----> Root
-node++ each time
-
-choice: max n
-
-Data reuse:
--Leaf judge
--Single game continuity
--air counting in one roll out
-*/
 void Robot::C_mcts::dfs1(int r, int c)
 {
     vis[r][c] = true;
@@ -525,132 +507,137 @@ void Robot::C_mcts::expand3(int partSubscript, int r, int c)
     }
 
 }
-
-
-void Robot::C_mcts::solve1(size_t timeLimit, json& info)
+inline double sigmoid(double x)
 {
-    clock_t startTime = clock();
-    int oriPiecesCnt = 0;
-    for (int i = 0; i < 9; i++)
-    {
-        for (int j = 0; j < 9; j++)
-        {
-            board[i][j] = g[i][j]; //0air 1black 2white
-            if (board[i][j])
-                oriPiecesCnt++;
-        }
-    }
-    expand1(root_next_Part, root);
-    //iteration
-    int path[80]{};
+	return 1.0 / (1 + exp(-x));
+}
 
-    do
-    {
-        node* now = root;
-        int piecesCnt = oriPiecesCnt;
-        for (int i = 0; i < 9; i++)
-        {
-            for (int j = 0; j < 9; j++)
-            {
-                board[i][j] = g[i][j]; //0air 1black 2white
-            }
-        }
-        int next_part = root_next_Part;
-        int counter_part = next_part % 2 + 1;
 
-        //go to leaf:
-        int pathLen = 0;
+void Robot::C_mcts::solve(size_t timeLimit, json& info)
+{
+	clock_t startTime = clock();
+	int oriPiecesCnt = 0;
+	for (int i = 0; i < 9; i++)
+	{
+		for (int j = 0; j < 9; j++)
+		{
+			board[i][j] = g[i][j]; //0air 1black 2white
+			if (board[i][j])
+				oriPiecesCnt++;
+		}
+	}
+	root = new node;
+	expand1(root_next_Part, root);
+	//iteration
+	int path[80]{};
 
-        while (now->unexploredSonsCnt == 0 && now->totalSonsCnt > 0)
-        {
-            double maxUCT = INT32_MIN;
-            int index = 0;
-            for (int i = 0; i < now->totalSonsCnt; i++)
-            {
-                double UCT = double(now->sons[now->sonsIndex[i]]->w) / now->sons[now->sonsIndex[i]]->t
-                    + exploreFactor * sqrt(log(now->t) / now->sons[now->sonsIndex[i]]->t)
-                    + greedyFactor * (1 - piecesCnt / 81.0) *
-                    (now->sons[now->sonsIndex[i]]->counter_part_ava_cnt
-                        - now->sons[now->sonsIndex[i]]->next_part_ava_cnt);
-                if (UCT > maxUCT)
-                {
-                    maxUCT = UCT;
-                    index = i; //refer to sonsIndex subscript
-                }
-            }
-            board[now->sonsIndex[index] / 9][now->sonsIndex[index] % 9] = next_part;
-            std::swap(next_part, counter_part);
-            now = now->sons[now->sonsIndex[index]];
-            path[pathLen] = index;
-            pathLen++;
-            piecesCnt++;
-        }
-        if (now->totalSonsCnt == 0) continue;
-        //expand:
-        now->unexploredSonsCnt--;
-        board[now->sonsIndex[now->unexploredSonsCnt] / 9][now->sonsIndex[now->unexploredSonsCnt] % 9] = next_part;
-        path[pathLen] = now->unexploredSonsCnt;
-        pathLen++;
-        std::swap(next_part, counter_part);
-        now = now->sons[now->sonsIndex[now->unexploredSonsCnt]] = new node;
-        expand2(next_part, now);
+	do
+	{
+		node* now = root;
+		int piecesCnt = oriPiecesCnt;
+		for (int i = 0; i < 9; i++)
+		{
+			for (int j = 0; j < 9; j++)
+			{
+				board[i][j] = g[i][j]; //0air 1black 2white
+			}
+		}
+		int next_part = root_next_Part;
+		int counter_part = next_part % 2 + 1;
 
-        //roll out
-        //attention: avaPlaceCnt only decreases
-        avaPlaceCnt[0] = avaPlaceCnt[1] = 0;
-        for (int part = 0; part < 2; part++)
-        {
-            for (int i = 0; i < 9; i++)
-            {
-                for (int j = 0; j < 9; j++)
-                {
-                    if (dpAvaState[part][i][j] == 1)
-                    {
-                        dpAvaPlace[part][avaPlaceCnt[part]] = 9 * i + j;
-                        avaPlaceCnt[part]++;
-                    }
-                }
-            }
-        }
-        now->next_part_ava_cnt = avaPlaceCnt[next_part - 1];
-        now->counter_part_ava_cnt = avaPlaceCnt[(next_part - 1) ^ 1];
+		//go to leaf:
+		int pathLen = 0;
 
-        //attention, dpAvaPlace is ordered,but soon unodered -_- ...
-        while (avaPlaceCnt[next_part - 1] > 0)
-        {
-            srand(clock());
-            int choice = rand() % avaPlaceCnt[next_part - 1];
-            expand3(next_part - 1, dpAvaPlace[next_part - 1][choice] / 9, dpAvaPlace[next_part - 1][choice] % 9);
-            ;           std::swap(next_part, counter_part);
-        }
+		while (now->unexploredSonsCnt == 0 && now->totalSonsCnt > 0)
+		{
+			double maxUCT = INT32_MIN;
+			int index = 0;
+			for (int i = 0; i < now->totalSonsCnt; i++)
+			{
+				double UCT = double(now->sons[now->sonsIndex[i]]->w) / now->sons[now->sonsIndex[i]]->t
+					+ exploreFactor * sqrt(log(now->t) / now->sons[now->sonsIndex[i]]->t)
+					+ greedyFactor * (1 - piecesCnt / 81.0) *
+					(now->sons[now->sonsIndex[i]]->counter_part_ava_cnt
+						- now->sons[now->sonsIndex[i]]->next_part_ava_cnt);
+				if (UCT > maxUCT)
+				{
+					maxUCT = UCT;
+					index = i; //refer to sonsIndex subscript
+				}
+			}
+			board[now->sonsIndex[index] / 9][now->sonsIndex[index] % 9] = next_part;
+			std::swap(next_part, counter_part);
+			now = now->sons[now->sonsIndex[index]];
+			path[pathLen] = index;
+			pathLen++;
+			piecesCnt++;
+		}
+		if (now->totalSonsCnt == 0) continue;
+		//expand:
+		now->unexploredSonsCnt--;
+		board[now->sonsIndex[now->unexploredSonsCnt] / 9][now->sonsIndex[now->unexploredSonsCnt] % 9] = next_part;
+		path[pathLen] = now->unexploredSonsCnt;
+		pathLen++;
+		std::swap(next_part, counter_part);
+		now = now->sons[now->sonsIndex[now->unexploredSonsCnt]] = new node;
+		expand2(next_part, now);
 
-        //Backpropagation:C ----> Root
-        //loser is next_part
-        now = root;
-        int winAddition = 0;
-        if (root_next_Part == next_part) winAddition = 1;
-        now->w += winAddition;
-        now->t++;
-        for (int i = 0; i < pathLen; i++)
-        {
-            now = now->sons[now->sonsIndex[path[i]]];
-            winAddition ^= 1;
-            now->w += winAddition;
-            now->t++;
-        }
+		//roll out
+		//attention: avaPlaceCnt only decreases
+		avaPlaceCnt[0] = avaPlaceCnt[1] = 0;
+		for (int part = 0; part < 2; part++)
+		{
+			for (int i = 0; i < 9; i++)
+			{
+				for (int j = 0; j < 9; j++)
+				{
+					if (dpAvaState[part][i][j] == 1)
+					{
+						dpAvaPlace[part][avaPlaceCnt[part]] = 9 * i + j;
+						avaPlaceCnt[part]++;
+					}
+				}
+			}
+		}
+		now->next_part_ava_cnt = avaPlaceCnt[next_part - 1];
+		now->counter_part_ava_cnt = avaPlaceCnt[(next_part - 1) ^ 1];
 
-    } while ((clock() - startTime) <= timeLimit);
+		//attention, dpAvaPlace is ordered,but soon unodered -_- ...
+		while (avaPlaceCnt[next_part - 1] > 0)
+		{
+			srand(clock());
+			int choice = rand() % avaPlaceCnt[next_part - 1];
+			expand3(next_part - 1, dpAvaPlace[next_part - 1][choice] / 9, dpAvaPlace[next_part - 1][choice] % 9);
+			;           std::swap(next_part, counter_part);
+		}
 
-    int index = 0;
-    int max_t = 0;
-    for (int i = root->unexploredSonsCnt; i < root->totalSonsCnt; i++)
-    {
-        if (root->sons[root->sonsIndex[i]]->t > max_t)
-        {
-            max_t = root->sons[root->sonsIndex[i]]->t;
-            index = root->sonsIndex[i];
-        }
-    }
+		//Backpropagation:C ----> Root
+		//loser is next_part
+		now = root;
+		int winAddition = 0;
+		if (root_next_Part == next_part) winAddition = 1;
+		now->w += winAddition;
+		now->t++;
+		for (int i = 0; i < pathLen; i++)
+		{
+			now = now->sons[now->sonsIndex[path[i]]];
+			winAddition ^= 1;
+			now->w += winAddition;
+			now->t++;
+		}
+
+	} while ((clock() - startTime) <= timeLimit);
+
+	int index = 0;
+	int max_t = 0;
+	for (int i = root->unexploredSonsCnt; i < root->totalSonsCnt; i++)
+	{
+		if (root->sons[root->sonsIndex[i]]->t > max_t)
+		{
+			max_t = root->sons[root->sonsIndex[i]]->t;
+			index = root->sonsIndex[i];
+		}
+	}
 
     choice[0] = index / 9;
     choice[1] = index % 9;

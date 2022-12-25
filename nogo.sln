@@ -5,10 +5,7 @@ VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nogo", "nogo.vcxproj", "{244CF09B-00C0-4392-8F3C-44074DBF6072}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "botzone", "..\botzone\botzone.vcxproj", "{556797DC-8BBE-4656-B2FD-2657FFD842C1}"
-	ProjectSection(ProjectDependencies) = postProject
-		{244CF09B-00C0-4392-8F3C-44074DBF6072} = {244CF09B-00C0-4392-8F3C-44074DBF6072}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "c_mcts", "botzone\botzone.vcxproj", "{556797DC-8BBE-4656-B2FD-2657FFD842C1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

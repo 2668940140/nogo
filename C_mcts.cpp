@@ -637,14 +637,11 @@ inline double sigmoid(double x)
 const Game::pos Robot::C_mcts::solve2(const Game& g, size_t timeLimit, json& info)
 {
 	clock_t startTime = clock();
-	int oriPiecesCnt = 0;
 	for (int i = 0; i < 9; i++)
 	{
 		for (int j = 0; j < 9; j++)
 		{
 			board[i][j] = g[i][j]; //0air 1black 2white
-			if (board[i][j])
-				oriPiecesCnt++;
 		}
 	}
 	node* root = new node;
@@ -656,7 +653,6 @@ const Game::pos Robot::C_mcts::solve2(const Game& g, size_t timeLimit, json& inf
 	do
 	{
 		node* now = root;
-		int piecesCnt = oriPiecesCnt;
 		for (int i = 0; i < 9; i++)
 		{
 			for (int j = 0; j < 9; j++)
@@ -689,7 +685,6 @@ const Game::pos Robot::C_mcts::solve2(const Game& g, size_t timeLimit, json& inf
 			now = now->sons[now->sonsIndex[index]];
 			path[pathLen] = index;
 			pathLen++;
-			piecesCnt++;
 		}
 		if (now->totalSonsCnt == 0) continue;
 		//expand:
