@@ -628,3 +628,127 @@ const Game::pos Robot::C_mcts::solve1(const Game& g, size_t timeLimit, json& inf
 	delete root;
 	return { index / 9,index % 9 };
 }
+
+inline double sigmoid(double x)
+{
+	return 1.0 / (1 + exp(-x));
+}
+
+const Game::pos Robot::C_mcts::solve2(const Game& g, size_t timeLimit, json& info)
+{
+	clock_t startTime = clock();
+	int oriPiecesCnt = 0;
+	for (int i = 0; i < 9; i++)
+	{
+		for (int j = 0; j < 9; j++)
+		{
+			board[i][j] = g[i][j]; //0air 1black 2white
+			if (board[i][j])
+				oriPiecesCnt++;
+		}
+	}
+	node* root = new node;
+	int root_next_Part = g.show_next_part();
+	expand1(root_next_Part, root);
+	//iteration
+	int path[80]{};
+
+	do
+	{
+		node* now = root;
+		int piecesCnt = oriPiecesCnt;
+		for (int i = 0; i < 9; i++)
+		{
+			for (int j = 0; j < 9; j++)
+			{
+				board[i][j] = g[i][j]; //0air 1black 2white
+			}
+		}
+		int next_part = root_next_Part;
+		int counter_part = next_part % 2 + 1;
+
+		//go to leaf:
+		int pathLen = 0;
+
+		while (now->unexploredSonsCnt == 0 && now->totalSonsCnt > 0)
+		{
+			double maxUCT = INT32_MIN;
+			int index = 0;
+			for (int i = 0; i < now->totalSonsCnt; i++)
+			{
+				double UCT = sigmoid(double(now->sons[now->sonsIndex[i]]->w) / now->sons[now->sonsIndex[i]]->t)
+					+ exploreFactor * sqrt(log(now->t) / now->sons[now->sonsIndex[i]]->t);
+				if (UCT > maxUCT)
+				{
+					maxUCT = UCT;
+					index = i; //refer to sonsIndex subscript
+				}
+			}
+			board[now->sonsIndex[index] / 9][now->sonsIndex[index] % 9] = next_part;
+			std::swap(next_part, counter_part);
+			now = now->sons[now->sonsIndex[index]];
+			path[pathLen] = index;
+			pathLen++;
+			piecesCnt++;
+		}
+		if (now->totalSonsCnt == 0) continue;
+		//expand:
+		now->unexploredSonsCnt--;
+		board[now->sonsIndex[now->unexploredSonsCnt] / 9][now->sonsIndex[now->unexploredSonsCnt] % 9] = next_part;
+		path[pathLen] = now->unexploredSonsCnt;
+		pathLen++;
+		std::swap(next_part, counter_part);
+		now = now->sons[now->sonsIndex[now->unexploredSonsCnt]] = new node;
+		expand2(next_part, now);
+
+		//roll out
+		//attention: avaPlaceCnt only decreases
+		avaPlaceCnt[0] = avaPlaceCnt[1] = 0;
+		for (int part = 0; part < 2; part++)
+		{
+			for (int i = 0; i < 9; i++)
+			{
+				for (int j = 0; j < 9; j++)
+				{
+					if (dpAvaState[part][i][j] == 1)
+					{
+						dpAvaPlace[part][avaPlaceCnt[part]] = 9 * i + j;
+						avaPlaceCnt[part]++;
+					}
+				}
+			}
+		}
+		now->next_part_ava_cnt = avaPlaceCnt[next_part - 1];
+		now->counter_part_ava_cnt = avaPlaceCnt[(next_part - 1) ^ 1];
+
+		//Backpropagation:C ----> Root
+		//loser is next_part
+		int winAddition = now->counter_part_ava_cnt - now->next_part_ava_cnt;
+		now = root;
+		if (root_next_Part != next_part) winAddition *= -1;
+		now->w += winAddition;
+		now->t++;
+		for (int i = 0; i < pathLen; i++)
+		{
+			now = now->sons[now->sonsIndex[path[i]]];
+			winAddition *= -1;
+			now->w += winAddition;
+			now->t++;
+		}
+
+	} while ((clock() - startTime) <= timeLimit);
+
+	int index = 0;
+	int max_t = 0;
+	for (int i = root->unexploredSonsCnt; i < root->totalSonsCnt; i++)
+	{
+		if (root->sons[root->sonsIndex[i]]->t > max_t)
+		{
+			max_t = root->sons[root->sonsIndex[i]]->t;
+			index = root->sonsIndex[i];
+		}
+	}
+
+	delete root;
+	return { index / 9,index % 9 };
+}

@@ -18,8 +18,8 @@ namespace Robot
 		*/
 		struct node
 		{
-			int w; // win games, not for next_part, but for the part which just placed a piece
-			int t; // total games
+			long long w; // about value
+			long long t; // total games
 			node* sons[81];
 			int unexploredSonsCnt;
 			int totalSonsCnt;
@@ -92,6 +92,7 @@ namespace Robot
 		{}
 		const Game::pos	solve(const Game& g, size_t timeLimit, json& info); //without greedy
 		const Game::pos	solve1(const Game& g, size_t timeLimit, json& info); //with linear down greedy
+		const Game::pos	solve2(const Game& g, size_t timeLimit, json& info); //no rollout, value backpropagation,uct+minmax
 	};
 	
 

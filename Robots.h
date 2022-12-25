@@ -22,5 +22,10 @@ namespace Robot
 		C_mcts c_mcts(1.414, 1.0);
 		return c_mcts.solve1(g, timeLimit, info);
 	}
+	const Game::pos c_mctsMinMax(const Game& g, size_t timeLimit, json& info)
+	{
+		C_mcts c_mcts(1.414, 0);
+		return c_mcts.solve2(g, timeLimit, info);
+	}
 }
 
