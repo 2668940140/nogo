@@ -45,10 +45,10 @@ namespace Robot
 	private:
 		//overall
 		const double exploreFactor = 1.414;
-		const double greedyFactor = 1.0;
+		const double greedyFactor = 1.414;
+		const json C_mcts_initial_Json = {};
 		const int dr[4] = { -1,0,1,0 };
 		const int dc[4] = { 0,-1,0,1 };
-		const json C_mcts_initial_Json = {};
 
 		int board[9][9] = { 0 };
 
@@ -65,6 +65,8 @@ namespace Robot
 		int dpAvaState[2][9][9] = { 0 };
 		int dpAvaPlace[2][80] = { 0 };
 		int avaPlaceCnt[2] = { 0 };
+
+		bool ok = false;
 	private:
 		//dfs with color
 		void dfs1(int r, int c);
@@ -79,7 +81,7 @@ namespace Robot
 		void dfs4(int r, int c); 
 
 		//dfs if the part can place in this air, which is the only air of one block
-		void dfs5(int r, int c, bool& ok); 
+		void dfs5(int r, int c); 
 		
 		void expand1(int part, node*); //normal expand
 		void expand2(int part, node*); //expand for the first step in rollout
