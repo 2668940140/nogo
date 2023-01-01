@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nogo", "nogo.vcxproj", "{24
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "c_mcts", "botzone\botzone.vcxproj", "{556797DC-8BBE-4656-B2FD-2657FFD842C1}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "qt", "qt\qt.vcxproj", "{5FC6786D-281B-4B75-998E-B3D3B7E2EE76}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -31,6 +33,14 @@ Global
 		{556797DC-8BBE-4656-B2FD-2657FFD842C1}.Release|x64.Build.0 = Release|x64
 		{556797DC-8BBE-4656-B2FD-2657FFD842C1}.Release|x86.ActiveCfg = Release|Win32
 		{556797DC-8BBE-4656-B2FD-2657FFD842C1}.Release|x86.Build.0 = Release|Win32
+		{5FC6786D-281B-4B75-998E-B3D3B7E2EE76}.Debug|x64.ActiveCfg = Debug|x64
+		{5FC6786D-281B-4B75-998E-B3D3B7E2EE76}.Debug|x64.Build.0 = Debug|x64
+		{5FC6786D-281B-4B75-998E-B3D3B7E2EE76}.Debug|x86.ActiveCfg = Debug|x64
+		{5FC6786D-281B-4B75-998E-B3D3B7E2EE76}.Debug|x86.Build.0 = Debug|x64
+		{5FC6786D-281B-4B75-998E-B3D3B7E2EE76}.Release|x64.ActiveCfg = Release|x64
+		{5FC6786D-281B-4B75-998E-B3D3B7E2EE76}.Release|x64.Build.0 = Release|x64
+		{5FC6786D-281B-4B75-998E-B3D3B7E2EE76}.Release|x86.ActiveCfg = Release|x64
+		{5FC6786D-281B-4B75-998E-B3D3B7E2EE76}.Release|x86.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

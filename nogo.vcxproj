@@ -70,6 +70,9 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>D:\doucument\Code\projects\nogo</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -133,22 +136,22 @@
     <None Include="设计\主体框架.pdf" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="B_mcts.cpp" />
+    <ClCompile Include="Console.cpp" />
+    <ClCompile Include="C_mcts.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="RandomBots.cpp" />
+    <ClCompile Include="TUI\Front.cpp" />
+    <ClCompile Include="unit test.cpp" />
+  </ItemGroup>
+  <ItemGroup>
     <ClInclude Include="B_mcts.h" />
     <ClInclude Include="Console.h" />
     <ClInclude Include="C_mcts.h" />
-    <ClInclude Include="Front.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="RandomBots.h" />
     <ClInclude Include="Robots.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="Console.cpp" />
-    <ClCompile Include="C_mcts.cpp" />
-    <ClCompile Include="Front.cpp" />
-    <ClCompile Include="Game.cpp" />
-    <ClCompile Include="RandomBots.cpp" />
-    <ClCompile Include="unit test.cpp" />
-    <ClCompile Include="B_mcts.cpp" />
+    <ClInclude Include="TUI\Front.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

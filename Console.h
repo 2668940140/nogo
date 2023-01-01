@@ -1,5 +1,5 @@
 #pragma once
-#include "Front.h"
+#include "qt/Front.h"
 #include "Game.h"
 #include <vector>
 #include "JSON for Modern C++ version 3.11.2/single_include/nlohmann/json.hpp"

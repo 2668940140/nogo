@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/mianWindow">
+        <file>resources/context.png</file>
+    </qresource>
+</RCC>
