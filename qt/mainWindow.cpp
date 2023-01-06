@@ -1,12 +1,11 @@
-#include "mianWindow.h"
+#include "mainWindow.h"
 #include "gameWindow.h"
-
 
 mainWindow::mainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
     ui.setupUi(this);
-    connect(ui.newGameButton, SIGNAL(pressed()),this, SLOT(show_gameWindow()));
+    connect(ui.newGameButton, SIGNAL(released()), this, SLOT(show_gameWindow()));
 }
 
 mainWindow::~mainWindow()
@@ -15,6 +14,6 @@ mainWindow::~mainWindow()
 
 void mainWindow::show_gameWindow()
 {
-    gameWindow *window1 = new gameWindow(this);
-    window1->show();
+    gameWindow* window1 = new gameWindow;
+    window1->exec();
 }

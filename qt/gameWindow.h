@@ -2,17 +2,14 @@
 
 #include <QtWidgets/QMainWindow>
 #include "ui_gameWindow.h"
-
-class gameWindow : public QMainWindow
+#include "console.h"
+class gameWindow : public QDialog
 {
     Q_OBJECT
-
 public:
     gameWindow(QWidget* parent = nullptr);
     ~gameWindow();
 private:
-    QWidget* father;
     Ui::gameWindow ui;
-private slots:
-    void showMain();
+    Console console;
 };

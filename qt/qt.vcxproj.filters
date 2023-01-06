@@ -35,13 +35,10 @@
     <QtRcc Include="mianWindow.qrc">
       <Filter>资源文件</Filter>
     </QtRcc>
-    <QtUic Include="mianWindow.ui">
-      <Filter>窗体</Filter>
-    </QtUic>
-    <QtMoc Include="mianWindow.h">
+    <QtMoc Include="mainWindow.h">
       <Filter>头文件</Filter>
     </QtMoc>
-    <ClCompile Include="mianWindow.cpp">
+    <ClCompile Include="mainWindow.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -95,6 +92,9 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <QtUic Include="mainWindow.ui">
+      <Filter>窗体</Filter>
+    </QtUic>
     <QtUic Include="gameWindow.ui">
       <Filter>窗体</Filter>
     </QtUic>

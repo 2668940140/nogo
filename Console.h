@@ -1,13 +1,14 @@
 #pragma once
-#include "qt/Front.h"
+#include "qt/Front.h"  //qt/Front.h || TUI/Front.h
 #include "Game.h"
 #include <vector>
 #include "JSON for Modern C++ version 3.11.2/single_include/nlohmann/json.hpp"
 #include <string>
 
+
 using json = nlohmann::json;
 
-static class Console
+class Console
 {
 private:
 	struct stepInfo
@@ -22,6 +23,14 @@ private:
 			whiteInfo = m_whiteInfo;
 		}
 	};
+
+	class my_scene : public QGraphicsScene
+	{
+	public:
+		Console* console;
+	protected:
+		void mouseReleaseEvent(QGraphicsSceneMouseEvent* e) override;
+	}scene;
 
 private:
 	std::vector<stepInfo> onGoing;
@@ -55,7 +64,7 @@ public:
 	size_t botPerformDelay;
 
 	Console();
-	~Console() {}
+	~Console();
 
 	//receive initial info
 	Game::flag StartNew(const json& b = json(), const json& w = json());
@@ -81,4 +90,8 @@ public:
 	//the second parameter is the initial info
 	void setBlackBot(Bot,json info = json());
 	void setWhiteBot(Bot,json info = json());
-}console;
+	void setGraph(QGraphicsView* p)
+	{
+		p->setScene(&scene);
+	}
+};

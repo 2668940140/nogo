@@ -1,4 +1,4 @@
-#include "mianWindow.h"
+#include "mainWindow.h"
 #include <QtWidgets/QApplication>
 #include "Console.h"
 

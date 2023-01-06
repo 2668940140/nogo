@@ -4,6 +4,7 @@
 #include <ctime>
 #include "JSON for Modern C++ version 3.11.2/single_include/nlohmann/json.hpp"
 
+
 void sleep(size_t t)
 {
 	clock_t from = clock();
@@ -79,6 +80,13 @@ Console::Console()
 	WhiteBot = nullptr;
 	botTimeLimit = INT32_MAX;
 	botPerformDelay = 0;
+	perform.scene = &scene;
+	perform.initialize();
+	scene.console = this;
+}
+
+Console::~Console()
+{
 }
 
 Game::flag Console::StartNew(const json& b, const json& w)
@@ -174,5 +182,28 @@ void Console::setWhiteBot(Bot bot, json info)
 {
 	WhiteBot = bot;
 	whiteBotInfo = info;
+	return;
+}
+
+void Console::my_scene::mouseReleaseEvent(QGraphicsSceneMouseEvent* e)
+{
+	double x = e->scenePos().x();
+	double y = e->scenePos().y();
+	int j = 0;
+	int i = 0;
+	while (x >= 60.0)
+	{
+		i++;
+		x -= 60.0;
+	}
+	while (y >=60.0)
+	{
+		j++;
+		y -= 60.0;
+	}
+	if (x > 10.0 && y > 10.0)
+	{
+		console->place({ i, j });
+	}
 	return;
 }

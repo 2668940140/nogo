@@ -1,5 +1,9 @@
 <RCC>
     <qresource prefix="/mianWindow">
         <file>resources/context.png</file>
+        <file>resources/darkWood.jpg</file>
+        <file>resources/airGrid.jpg</file>
+        <file>resources/blackGrid.jpg</file>
+        <file>resources/whiteGrid.jpg</file>
     </qresource>
 </RCC>

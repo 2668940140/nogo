@@ -87,9 +87,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <QtRcc Include="mianWindow.qrc" />
-    <QtUic Include="gameWindow.ui" />
-    <QtUic Include="mianWindow.ui" />
-    <QtMoc Include="mianWindow.h" />
+    <QtMoc Include="mainWindow.h" />
     <ClCompile Include="..\B_mcts.cpp" />
     <ClCompile Include="..\Console.cpp" />
     <ClCompile Include="..\C_mcts.cpp" />
@@ -97,8 +95,10 @@
     <ClCompile Include="..\RandomBots.cpp" />
     <ClCompile Include="Front.cpp" />
     <ClCompile Include="gameWindow.cpp" />
-    <ClCompile Include="mianWindow.cpp" />
+    <ClCompile Include="mainWindow.cpp" />
     <ClCompile Include="main.cpp" />
+    <QtUic Include="gameWindow.ui" />
+    <QtUic Include="mainWindow.ui" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\B_mcts.h" />
