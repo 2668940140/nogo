@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QtWidgets/QMainWindow>
-#include "ui_mianWindow.h"
+#include "ui_mainWindow.h"
 
 class mainWindow : public QMainWindow
 {
@@ -15,4 +15,6 @@ private:
     Ui::window0 ui;
 private slots:
     void show_gameWindow();
+    void readGame();
+    void rule();
 };

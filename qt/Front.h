@@ -4,6 +4,8 @@
 #include <QGraphicsScene>
 #include <QPixmap>
 #include <QGraphicsSceneMouseEvent>
+#include <QLabel>
+
 class Front
 {
 private:
@@ -12,7 +14,10 @@ private:
 	QPixmap whiteGrid;
 	QGraphicsPixmapItem* grids[81]{};
 public:
-	QGraphicsScene* scene;
+	QGraphicsScene* scene = nullptr;
+	QGraphicsView* view = nullptr;
+	QLabel* label = nullptr;
+
 public:
 	Front();
 	~Front();

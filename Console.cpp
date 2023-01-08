@@ -1,9 +1,9 @@
-#include "Console.h"
+﻿#include "Console.h"
 #include <fstream>
 #include <string>
 #include <ctime>
 #include "JSON for Modern C++ version 3.11.2/single_include/nlohmann/json.hpp"
-
+#include <QtWidgets/qlabel.h>
 
 void sleep(size_t t)
 {
@@ -152,7 +152,7 @@ Game::flag Console::takeBack(unsigned step)
 	}
 }
 
-void Console::save(const std::string& name)
+void Console::save(const std::wstring& name)
 {
 	std::fstream fs;
 	fs.open(name, std::ios_base::out);
@@ -161,7 +161,7 @@ void Console::save(const std::string& name)
 	return;
 }
 
-void Console::read(const std::string& name)
+void Console::read(const std::wstring& name)
 {
 	using json = nlohmann::json;
 	std::fstream fs;
@@ -204,6 +204,10 @@ void Console::my_scene::mouseReleaseEvent(QGraphicsSceneMouseEvent* e)
 	if (x > 10.0 && y > 10.0)
 	{
 		console->place({ i, j });
+		if (console->now() == Game::error)
+		{
+			console->now().clear();
+		}
 	}
 	return;
 }

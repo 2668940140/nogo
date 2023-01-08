@@ -4,7 +4,7 @@
 #include <vector>
 #include "JSON for Modern C++ version 3.11.2/single_include/nlohmann/json.hpp"
 #include <string>
-
+#include <QLabel>
 
 using json = nlohmann::json;
 
@@ -27,7 +27,7 @@ private:
 	class my_scene : public QGraphicsScene
 	{
 	public:
-		Console* console;
+		Console* console = nullptr;
 	protected:
 		void mouseReleaseEvent(QGraphicsSceneMouseEvent* e) override;
 	}scene;
@@ -44,9 +44,6 @@ private:
 	//read a series of games by json
 	void readJson(const json& content);
 
-	//mainly used after any break
-	Game::flag keepGo();
-
 	json whiteBotInfo;
 	json blackBotInfo;
 
@@ -54,6 +51,9 @@ private:
 	Bot WhiteBot;
 	
 public:
+	//mainly used after any break
+	Game::flag keepGo();
+
 	//determine whether it will print or not
 	bool performQ = true;
 
@@ -82,10 +82,10 @@ public:
 	Game::flag takeBack(unsigned step);
 
 	//to be updated for path and other config
-	void save(const std::string& name);
+	void save(const std::wstring& name);
 
 	//to be updated for path and other config
-	void read(const std::string& name);
+	void read(const std::wstring& name);
 
 	//the second parameter is the initial info
 	void setBlackBot(Bot,json info = json());
@@ -93,5 +93,10 @@ public:
 	void setGraph(QGraphicsView* p)
 	{
 		p->setScene(&scene);
+		perform.view = p;
+	}
+	void setLabel(QLabel* p)
+	{
+		perform.label = p;
 	}
 };

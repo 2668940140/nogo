@@ -29,16 +29,20 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>NoGo</string>
+   <string>Nogo</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="mianWindow.qrc">
+    <normaloff>:/mianWindow/resources/blackGrid.png</normaloff>:/mianWindow/resources/blackGrid.png</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QPushButton" name="loadGameButton">
     <property name="geometry">
      <rect>
-      <x>240</x>
-      <y>260</y>
-      <width>171</width>
-      <height>51</height>
+      <x>200</x>
+      <y>183</y>
+      <width>250</width>
+      <height>45</height>
      </rect>
     </property>
     <property name="text">
@@ -48,10 +52,10 @@
    <widget class="QPushButton" name="newGameButton">
     <property name="geometry">
      <rect>
-      <x>240</x>
-      <y>160</y>
-      <width>171</width>
-      <height>51</height>
+      <x>200</x>
+      <y>122</y>
+      <width>250</width>
+      <height>45</height>
      </rect>
     </property>
     <property name="cursor">
@@ -86,14 +90,59 @@
      <pixmap resource="mianWindow.qrc">:/mianWindow/resources/context.png</pixmap>
     </property>
    </widget>
+   <widget class="QPushButton" name="help">
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>244</y>
+      <width>250</width>
+      <height>45</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>规则</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="endButton">
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>305</y>
+      <width>250</width>
+      <height>45</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>退出游戏</string>
+    </property>
+   </widget>
    <zorder>background</zorder>
    <zorder>newGameButton</zorder>
    <zorder>loadGameButton</zorder>
+   <zorder>help</zorder>
+   <zorder>endButton</zorder>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
   <include location="mianWindow.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>endButton</sender>
+   <signal>clicked()</signal>
+   <receiver>window0</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>336</x>
+     <y>327</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>550</x>
+     <y>-13</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

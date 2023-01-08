@@ -7,6 +7,7 @@
 //This is used as a test. random, gaurantee not suicide
 const Game::pos Robot::RandomBot(const Game& g, size_t timeLimit, json& info)
 {
+	clock_t beginTime = clock();
 	std::vector<Game::pos> whereAvailable;
 	for (int i = 0; i < 9; i++)
 	{
@@ -23,12 +24,15 @@ const Game::pos Robot::RandomBot(const Game& g, size_t timeLimit, json& info)
 	srand(clock());
 	size_t select = rand() % size;
 
+	while (clock() - beginTime<double(timeLimit) * 1000 / CLOCKS_PER_SEC);
+
 	return whereAvailable[select];
 }
 
 //try to make its rival has less place to place, depth = 1
 const Game::pos Robot::RandomBot1(const Game& g, size_t timeLimit, json& info)
 {
+	clock_t beginTime = clock();
 	std::vector<Game::pos> whereAvailable;
 	for (int i = 0; i < 9; i++)
 	{
@@ -73,5 +77,6 @@ const Game::pos Robot::RandomBot1(const Game& g, size_t timeLimit, json& info)
 	srand(clock());
 	int select = rand() % choices.size();
 
+	while (clock() - beginTime<double(timeLimit) * 1000 / CLOCKS_PER_SEC);
 	return whereAvailable[choices[select]];
 }
