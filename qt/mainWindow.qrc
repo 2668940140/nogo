@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/mainWindow">
+        <file>resources/context.png</file>
+        <file>resources/airGrid.png</file>
+        <file>resources/board.png</file>
+        <file>resources/blackGrid.png</file>
+        <file>resources/whiteGrid.png</file>
+        <file>resources/putPiece.wav</file>
+        <file>resources/test.mp3</file>
+    </qresource>
+</RCC>
