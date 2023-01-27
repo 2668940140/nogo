@@ -11,10 +11,6 @@
 
 using std::array;
 using json = nlohmann::json;
-//Recieve a function as a robot
-//first parameter is the situation of the game
-//second parameter is the time limit of the calculation
-//of course ,not implemented, the bot can ignore it,but better not
 
 class Game
 {
